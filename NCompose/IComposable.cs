@@ -2,6 +2,6 @@
 {
     public interface IComposable
     {
-        void Add(object element);
+        void AddPart(object element);
     }
 }

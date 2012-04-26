@@ -38,7 +38,8 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Container.cs" />
+    <Compile Include="Composable.cs" />
+    <Compile Include="CompositionBehavior.cs" />
     <Compile Include="IComposable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

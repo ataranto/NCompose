@@ -1,11 +1,14 @@
 ﻿using Xunit;
+using System;
 
 namespace NCompose.Test
 {
-    public interface ITestInterface
+    public interface ITest
     {
         bool Method1();
         bool Method2();
+
+        bool Method3();
     }
 
     internal class Class1
@@ -27,12 +30,12 @@ namespace NCompose.Test
     public class ContainerFixture
     {
         [Fact]
-        public void TestBasicSyntax()
+        public void TestBasicCreateSyntax()
         {
-            var test = ComposableFactory.CreateComposable<ITestInterface>(composable =>
+            var test = Composable.Create<ITest>(composable =>
             {
-                composable.Add(new Class1());
-                composable.Add(new Class2());
+                composable.AddPart(new Class1());
+                composable.AddPart(new Class2());
             });
 
             Assert.True(test.Method1());
@@ -44,17 +47,32 @@ namespace NCompose.Test
         [Fact]
         public void ComposableImplementsInterface()
         {
-            var composable = ComposableFactory.CreateComposable<ITestInterface>();
+            var composable = Composable.Create<ITest>();
             Assert.IsAssignableFrom<IComposable>(composable);
         }
 
         [Fact]
         public void AddsElement()
         {
-            ComposableFactory.CreateComposable<ITestInterface>(composable =>
+            Composable.Create<ITest>(composable =>
             {
-                composable.Add(new Class1());
+                composable.AddPart(new Class1());
             });
+        }
+
+        [Fact]
+        public void LooseBehaviorReturnsDefault()
+        {
+            var test = Composable.Create<ITest>(CompositionBehavior.Loose);
+            Assert.Equal(default(bool), test.Method1());
+            Assert.Equal(default(bool), test.Method2());
+        }
+
+        //[Fact]
+        public void StrictBehaviorThrowsException()
+        {
+            var test = Composable.Create<ITest>(CompositionBehavior.Strict);
+            Assert.Throws<InvalidOperationException>(() => test.Method1());
         }
     }
 }
