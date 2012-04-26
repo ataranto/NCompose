@@ -52,7 +52,7 @@ namespace NCompose.Test
         }
 
         [Fact]
-        public void AddsElement()
+        public void AddsPart()
         {
             Composable.Create<ITest>(composable =>
             {
@@ -68,7 +68,7 @@ namespace NCompose.Test
             Assert.Equal(default(bool), test.Method2());
         }
 
-        //[Fact]
+        [Fact]
         public void StrictBehaviorThrowsException()
         {
             var test = Composable.Create<ITest>(CompositionBehavior.Strict);

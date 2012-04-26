@@ -95,6 +95,7 @@ namespace NCompose
                 if (method != null)
                 {
                     target = part;
+
                     return true;
                 }
             }
@@ -103,11 +104,6 @@ namespace NCompose
             target = null;
 
             return false;
-        }
-
-        private T GetDefault<T>()
-        {
-            return default(T);
         }
     }
 }
