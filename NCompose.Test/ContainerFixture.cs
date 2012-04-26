@@ -1,17 +1,24 @@
 ﻿using Xunit;
+
 namespace NCompose.Test
 {
-    internal class BarClass
+    public interface ITestInterface
     {
-        bool Bar()
+        bool Method1();
+        bool Method2();
+    }
+
+    internal class Class1
+    {
+        public bool Method1()
         {
             return true;
         }
     }
 
-    internal class BazClass
+    internal class Class2
     {
-        bool Baz()
+        public bool Method2()
         {
             return true;
         }
@@ -22,14 +29,14 @@ namespace NCompose.Test
         [Fact]
         public void TestBasicSyntax()
         {
-            var foo = ComposableFactory.CreateComposable<IFoo>(composable =>
+            var test = ComposableFactory.CreateComposable<ITestInterface>(composable =>
             {
-                composable.Add(new BarClass());
-                composable.Add(new BazClass());
+                composable.Add(new Class1());
+                composable.Add(new Class2());
             });
 
-            Assert.True(foo.Bar());
-            Assert.True(foo.Baz());
+            Assert.True(test.Method1());
+            Assert.True(test.Method2());
         }
 
         ////
@@ -37,17 +44,16 @@ namespace NCompose.Test
         [Fact]
         public void ComposableImplementsInterface()
         {
-            var composable = ComposableFactory.CreateComposable<IFoo>();
-
+            var composable = ComposableFactory.CreateComposable<ITestInterface>();
             Assert.IsAssignableFrom<IComposable>(composable);
         }
 
         [Fact]
         public void AddsElement()
         {
-            ComposableFactory.CreateComposable<IFoo>(composable =>
+            ComposableFactory.CreateComposable<ITestInterface>(composable =>
             {
-                composable.Add(new BarClass());
+                composable.Add(new Class1());
             });
         }
     }

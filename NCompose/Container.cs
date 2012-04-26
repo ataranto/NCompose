@@ -1,26 +1,15 @@
-﻿using Castle.DynamicProxy;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
+using Castle.DynamicProxy;
+
 namespace NCompose
 {
-    public interface IComposable
-    {
-        void Add(object element);
-    }
-
-    public interface IFoo
-    {
-        bool Bar();
-        bool Baz();
-    }
-
-    public class ComposableFactory
+    public static class ComposableFactory
     {
         private static readonly ProxyGenerator generator = new ProxyGenerator();
         private static readonly Type[] interfaces = new Type[] { typeof(IComposable) };
         
-        public static T CreateComposable<T>(Action<IComposable> callback = null)
+        public static T CreateComposable<T>(Action<IComposable> callback = null) where T : class
         {
             var type = typeof(T);
             if (!type.IsInterface)
@@ -28,83 +17,46 @@ namespace NCompose
                 throw new ArgumentException();
             }
 
-            var options = new ProxyGenerationOptions
-            {
-                BaseTypeForInterfaceProxy = typeof(Interceptor),
-                Selector = new Selector(),
-            };
-
-            var composable = (T)generator.CreateInterfaceProxyWithoutTarget(type, interfaces, options, new Interceptor());
+            var composable = generator.CreateInterfaceProxyWithoutTarget(type, interfaces, new Interceptor());
             if (callback != null)
             {
                 callback(composable as IComposable);
             }
 
-            return composable;
+            return composable as T;
         }
     }
 
-    public class Selector : IInterceptorSelector
+    public class Interceptor : IInterceptor, IComposable
     {
-        public IInterceptor[] SelectInterceptors(Type type, MethodInfo method, IInterceptor[] interceptors)
+        private readonly IList<object> elements = new List<object>();
+
+        void IInterceptor.Intercept(IInvocation invocation)
         {
-            Console.WriteLine("SElect: {0}, {1}", type, method);
-            return interceptors;
-        }
-    }
-
-    public class Interceptor : IInterceptor, IComposable, IFoo
-    {
-        IList<object> elements = new List<object>();
-
-        public void Intercept(IInvocation invocation)
-        {
-            //if (invocation.Method.Name == "Bar")
-                Console.WriteLine("method: {0}", invocation.Method.Name);
-
-            if (invocation.InvocationTarget == null
-                && invocation.Method.Name == "Add")
+            if (invocation.Method.DeclaringType == typeof(IComposable))
             {
-                Console.WriteLine("Interceptor Adding");
-                elements.Add(invocation.Arguments);
+                invocation.ReturnValue =
+                    invocation.Method.Invoke(this, invocation.Arguments);
             }
-            else if (invocation.InvocationTarget != null)
+            else
             {
-                Console.WriteLine("got target: {0}", invocation.InvocationTarget);
+                foreach (var element in elements)
+                {
+                    var type = element.GetType();
+                    var method = type.GetMethod(invocation.Method.Name);
+
+                    if (method != null)
+                    {
+                        invocation.ReturnValue =
+                            method.Invoke(element, invocation.Arguments);
+                    }
+                }
             }
-
-
-            //var target = invocation.InvocationTarget ?? invocation.Proxy;
-            //var composable = target as IComposable;
-
-            /*
-            int x = 0;
-            foreach (var element in composable.Elements)
-            {
-                Console.WriteLine("[{0}] {1}", x++, element.GetType());
-            }
-            */
-
-            //Console.WriteLine(composable.GetType());
-            //Console.WriteLine("+++++++ {0}", invocation.InvocationTarget);
-            //Console.WriteLine(invocation);
-            //throw new NotImplementedException();
-
-            invocation.ReturnValue = false;
         }
 
-        public void Add(object element)
+        void IComposable.Add(object element)
         {
-        }
-
-        public bool Bar()
-        {
-            return false;
-        }
-
-        public bool Baz()
-        {
-            return false;
+            elements.Add(element);
         }
     }
 }
