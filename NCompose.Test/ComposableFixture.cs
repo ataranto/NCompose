@@ -157,7 +157,7 @@ namespace NCompose.Test
 
         private static ICompleteInterface GetCompleteComposable()
         {
-            return Composable.Create<ICompleteInterface>(CompositionBehavior.Strict, composable =>
+            return Composable.Create<ICompleteInterface>(composable =>
             {
                 composable.AddPart(new CompleteClass());
             });

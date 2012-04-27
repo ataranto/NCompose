@@ -38,6 +38,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Aggregate\Total.cs" />
     <Compile Include="Composable.cs" />
     <Compile Include="CompositionBehavior.cs" />
     <Compile Include="IComposable.cs" />
