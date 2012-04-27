@@ -72,9 +72,9 @@ namespace NCompose
             }
         }
 
-        void IComposable.AddPart(object element)
+        void IComposable.AddPart(object part)
         {
-            parts.Add(element);
+            parts.Add(part);
         }
 
         private bool TryGetInvokeInfo(IInvocation invocation, out MethodInfo method, out object target)

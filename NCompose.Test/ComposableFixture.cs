@@ -7,8 +7,6 @@ namespace NCompose.Test
     {
         bool Method1();
         bool Method2();
-
-        bool Method3();
     }
 
     internal class Class1
@@ -27,7 +25,7 @@ namespace NCompose.Test
         }
     }
 
-    public class ContainerFixture
+    public class ComposableFixture
     {
         [Fact]
         public void TestBasicCreateSyntax()
