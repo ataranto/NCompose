@@ -59,6 +59,38 @@ namespace NCompose.Test
         }
 
         [Fact]
+        private void PartsIsInitiallyEmpty()
+        {
+            var composable = ComposableFactory.Create<ISimpleInterface>() as IComposable;
+            var parts = composable.Parts;
+
+            Assert.NotNull(parts);
+            Assert.Equal(0, parts.Count);
+        }
+
+        [Fact]
+        private void CanGetParts()
+        {
+            var composable = ComposableFactory.Create<ISimpleInterface>() as IComposable;
+            var part = new SimpleClass1();
+            composable.AddPart(new SimpleClass1());
+
+            Assert.Equal(1, composable.Parts.Count);
+            Assert.Same(part, composable.Parts[0]);
+        }
+
+        [Fact]
+        private void DuplicatePartsCannotBeAdded()
+        {
+            var composable = ComposableFactory.Create<ISimpleInterface>() as IComposable;
+            var part = new SimpleClass1();
+            composable.AddPart(part);
+            composable.AddPart(part);
+
+            Assert.Equal(1, composable.Parts.Count);
+        }
+
+        [Fact]
         private void LooseBehaviorReturnsDefault()
         {
             var test = ComposableFactory.Create<ISimpleInterface>(CompositionBehavior.Loose);

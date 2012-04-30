@@ -8,7 +8,7 @@ namespace NCompose
     public class Composable : IInterceptor, IComposable
     {
         private readonly CompositionBehavior behavior;
-        private readonly IList<object> parts = new List<object>();
+        private HashSet<object> parts = new HashSet<object>();
 
         public Composable(CompositionBehavior behavior)
         {
@@ -34,6 +34,14 @@ namespace NCompose
             else
             {
                 throw new InvalidOperationException();
+            }
+        }
+
+        IList<object> IComposable.Parts
+        {
+            get
+            {
+                return new List<object>(parts).AsReadOnly();
             }
         }
 
