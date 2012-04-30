@@ -40,6 +40,7 @@
   <ItemGroup>
     <Compile Include="Aggregate\Total.cs" />
     <Compile Include="Composable.cs" />
+    <Compile Include="ComposableFactory.cs" />
     <Compile Include="CompositionBehavior.cs" />
     <Compile Include="IComposable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

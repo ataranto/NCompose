@@ -23,7 +23,7 @@ namespace NCompose.Test.Aggregate
         private void TotalReturnsSum()
         {
             var count = 10;
-            var test = Composable.Create<ICount>(composable =>
+            var test = ComposableFactory.Create<ICount>(composable =>
             {
                 for (var x = 0; x < count; x++)
                 {

@@ -5,47 +5,12 @@ using Castle.DynamicProxy;
 
 namespace NCompose
 {
-    public static class Composable
-    {
-        private static readonly ProxyGenerator generator = new ProxyGenerator();
-        private static readonly Type[] interfaces = new Type[] { typeof(IComposable) };
-
-        public static T Create<T>(Action<IComposable> callback = null)
-        {
-            return Create<T>(CompositionBehavior.Default, callback);
-        }
-
-        public static T Create<T>(CompositionBehavior behavior)
-        {
-            return Create<T>(behavior, null);
-        }
-
-        public static T Create<T>(CompositionBehavior behavior, Action<IComposable> callback = null)
-        {
-            var type = typeof(T);
-            if (!type.IsInterface)
-            {
-                throw new ArgumentException();
-            }
-
-            var interceptor = new Interceptor(behavior);
-            var composable = generator.CreateInterfaceProxyWithoutTarget(type, interfaces, interceptor);
-
-            if (callback != null)
-            {
-                callback(composable as IComposable);
-            }
-
-            return (T)composable;
-        }
-    }
-
-    public class Interceptor : IInterceptor, IComposable
+    public class Composable : IInterceptor, IComposable
     {
         private readonly CompositionBehavior behavior;
         private readonly IList<object> parts = new List<object>();
 
-        public Interceptor(CompositionBehavior behavior)
+        public Composable(CompositionBehavior behavior)
         {
             this.behavior = behavior;
         }

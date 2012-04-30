@@ -1,35 +1,14 @@
-﻿using System;
-using Xunit;
+﻿using Xunit;
 
 namespace NCompose.Test
 {
-    public interface ISimpleInterface
-    {
-        bool Method1();
-        bool Method2();
-    }
-
-    internal class SimpleClass1
-    {
-        public bool Method1()
-        {
-            return true;
-        }
-    }
-
-    internal class SimpleClass2
-    {
-        public bool Method2()
-        {
-            return true;
-        }
-    }
-
     public interface ICompleteInterface
     {
         int Property { get; set; }
         void Out(out int x);
         void Ref(ref int x);
+        int ReturnAndOut(out int x);
+        int ReturnAndRef(ref int x);
         T Generic<T>();
     }
 
@@ -44,7 +23,7 @@ namespace NCompose.Test
 
             set
             {
-                
+
             }
         }
 
@@ -58,6 +37,18 @@ namespace NCompose.Test
             x = 1;
         }
 
+        public int ReturnAndOut(out int x)
+        {
+            x = 1;
+            return 1;
+        }
+
+        public int ReturnAndRef(ref int x)
+        {
+            x = 1;
+            return 1;
+        }
+
         public T Generic<T>()
         {
             return default(T);
@@ -66,54 +57,6 @@ namespace NCompose.Test
 
     public class ComposableFixture
     {
-        [Fact]
-        private void TestBasicCreateSyntax()
-        {
-            var test = Composable.Create<ISimpleInterface>(composable =>
-            {
-                composable.AddPart(new SimpleClass1());
-                composable.AddPart(new SimpleClass2());
-            });
-
-            Assert.True(test.Method1());
-            Assert.True(test.Method2());
-        }
-
-        ////
-
-        [Fact]
-        private void ComposableImplementsInterface()
-        {
-            var composable = Composable.Create<ISimpleInterface>();
-            Assert.IsAssignableFrom<IComposable>(composable);
-        }
-
-        [Fact]
-        private void AddsPart()
-        {
-            Composable.Create<ISimpleInterface>(composable =>
-            {
-                composable.AddPart(new SimpleClass1());
-            });
-        }
-
-        [Fact]
-        private void LooseBehaviorReturnsDefault()
-        {
-            var test = Composable.Create<ISimpleInterface>(CompositionBehavior.Loose);
-            Assert.Equal(default(bool), test.Method1());
-            Assert.Equal(default(bool), test.Method2());
-        }
-
-        [Fact]
-        private void StrictBehaviorThrowsException()
-        {
-            var test = Composable.Create<ISimpleInterface>(CompositionBehavior.Strict);
-            Assert.Throws<InvalidOperationException>(() => test.Method1());
-        }
-
-        ////
-
         [Fact]
         private void CallsGetProperty()
         {
@@ -149,6 +92,26 @@ namespace NCompose.Test
         }
 
         [Fact]
+        private void CallsReturnAndOutMethod()
+        {
+            var test = GetCompleteComposable();
+
+            int x;
+            Assert.Equal(1, test.ReturnAndOut(out x));
+            Assert.Equal(1, x);
+        }
+
+        [Fact]
+        private void CallsReturnAndRefMethod()
+        {
+            var test = GetCompleteComposable();
+
+            int x = 0;
+            Assert.Equal(1, test.ReturnAndRef(ref x));
+            Assert.Equal(1, x);
+        }
+
+        [Fact]
         private void CallsGenericMethod()
         {
             var test = GetCompleteComposable();
@@ -157,7 +120,7 @@ namespace NCompose.Test
 
         private static ICompleteInterface GetCompleteComposable()
         {
-            return Composable.Create<ICompleteInterface>(composable =>
+            return ComposableFactory.Create<ICompleteInterface>(composable =>
             {
                 composable.AddPart(new CompleteClass());
             });
