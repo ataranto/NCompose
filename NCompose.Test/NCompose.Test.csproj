@@ -39,7 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComposableFixture.cs" />
-    <Compile Include="Aggregate\TotalFixture.cs" />
+    <Compile Include="Aggregate\TotalAttributeFixture.cs" />
     <Compile Include="ComposableFactoryFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

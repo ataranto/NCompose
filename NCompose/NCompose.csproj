@@ -38,7 +38,8 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Aggregate\Total.cs" />
+    <Compile Include="Aggregate\TotalAttribute.cs" />
+    <Compile Include="Attribute.cs" />
     <Compile Include="Composable.cs" />
     <Compile Include="ComposableFactory.cs" />
     <Compile Include="CompositionBehavior.cs" />
