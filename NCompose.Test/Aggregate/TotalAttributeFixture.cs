@@ -27,7 +27,7 @@ namespace NCompose.Test.Aggregate
 
     public class TotalAttributeFixture
     {
-        private static int Count = 10;
+        private static int Count = 3;
 
         [Fact]
         private void PropertyReturnsTotal()

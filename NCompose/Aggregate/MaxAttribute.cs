@@ -5,12 +5,12 @@ using Castle.DynamicProxy;
 namespace NCompose.Aggregate
 {
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Method)]
-    public class TotalAttribute : Attribute
+    public class MaxAttribute : Attribute
     {
         public override object GetResult(IInvocation invocation, ICollection<object> parts)
         {
             object result = null;
-            var add = GetAdd(invocation.Method.ReturnType);
+            var max = GetMax(invocation.Method.ReturnType);
 
             foreach (var part in parts)
             {
@@ -23,18 +23,18 @@ namespace NCompose.Aggregate
                     var value = method.Invoke(part, invocation.Arguments);
                     result = result == null ?
                         value :
-                        add(result, value);
+                        max(result, value);
                 }
             }
 
             return result;
         }
 
-        private static Func<object, object, object> GetAdd(Type type)
+        private static Func<object, object, object> GetMax(Type type)
         {
             if (type == typeof(int))
             {
-                return (a, b) =>  { return (int)a + (int)b; };
+                return (a, b) => Math.Max((int)a, (int)b);
             }
             else
             {

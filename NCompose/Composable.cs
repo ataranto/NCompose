@@ -27,12 +27,12 @@ namespace NCompose
             {
                 // XXX: handle multiple/conflicting attributes?
 
-                foreach (var attribute in attributes)
+                foreach (var item in attributes)
                 {
-                    var total = attribute as TotalAttribute;
-                    if (total != null)
+                    var attribute = item as Attribute;
+                    if (attribute != null)
                     {
-                        invocation.ReturnValue = total.GetResult(invocation, parts);
+                        invocation.ReturnValue = attribute.GetResult(invocation, parts);
                         break;
                     }
                 }

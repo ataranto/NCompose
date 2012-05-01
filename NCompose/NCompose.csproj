@@ -38,6 +38,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Aggregate\MaxAttribute.cs" />
     <Compile Include="Aggregate\TotalAttribute.cs" />
     <Compile Include="Attribute.cs" />
     <Compile Include="Composable.cs" />
