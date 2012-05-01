@@ -20,7 +20,7 @@ namespace NCompose.Test.Aggregate
     public class TotalFixture
     {
         [Fact]
-        private void TotalReturnsSum()
+        private void ReturnsTotal()
         {
             var count = 10;
             var test = ComposableFactory.Create<ICount>(composable =>
