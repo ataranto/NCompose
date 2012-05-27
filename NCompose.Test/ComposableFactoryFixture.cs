@@ -73,7 +73,7 @@ namespace NCompose.Test
         {
             var composable = ComposableFactory.Create<ISimpleInterface>() as IComposable;
             var part = new SimpleClass1();
-            composable.AddPart(new SimpleClass1());
+            composable.AddPart(part);
 
             Assert.Equal(1, composable.Parts.Count);
             Assert.Same(part, composable.Parts[0]);
