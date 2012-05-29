@@ -7,7 +7,7 @@ namespace NCompose.Aggregate
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Method)]
     public class MaxAttribute : Attribute
     {
-        public override object GetResult(IInvocation invocation, ICollection<object> parts)
+        public override object GetResult(Castle.DynamicProxy.IInvocation invocation, ICollection<object> parts)
         {
             object result = null;
             var max = GetMax(invocation.Method.ReturnType);

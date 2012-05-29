@@ -45,6 +45,8 @@
     <Compile Include="ComposableFactory.cs" />
     <Compile Include="CompositionBehavior.cs" />
     <Compile Include="IComposable.cs" />
+    <Compile Include="IInvocation.cs" />
+    <Compile Include="IResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

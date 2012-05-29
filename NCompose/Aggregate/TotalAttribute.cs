@@ -7,7 +7,7 @@ namespace NCompose.Aggregate
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Method)]
     public class TotalAttribute : Attribute
     {
-        public override object GetResult(IInvocation invocation, ICollection<object> parts)
+        public override object GetResult(Castle.DynamicProxy.IInvocation invocation, ICollection<object> parts)
         {
             object result = null;
             var add = GetAdd(invocation.Method.ReturnType);

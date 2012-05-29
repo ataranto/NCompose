@@ -16,7 +16,7 @@ namespace NCompose
             this.behavior = behavior;
         }
 
-        void IInterceptor.Intercept(IInvocation invocation)
+        void IInterceptor.Intercept(Castle.DynamicProxy.IInvocation invocation)
         {
             MethodInfo method;
             object target;
@@ -67,7 +67,7 @@ namespace NCompose
             parts.Add(part);
         }
 
-        private bool TryGetInvokeInfo(IInvocation invocation, out MethodInfo method, out object target)
+        private bool TryGetInvokeInfo(Castle.DynamicProxy.IInvocation invocation, out MethodInfo method, out object target)
         {
             if (invocation.Method.DeclaringType == typeof(IComposable))
             {
