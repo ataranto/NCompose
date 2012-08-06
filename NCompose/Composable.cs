@@ -5,10 +5,36 @@ using Castle.DynamicProxy;
 
 namespace NCompose
 {
+    internal abstract class Aggregate
+    {
+        public object Func(object a, object b)
+        {
+            return InternalFunc(a, b);
+        }
+
+        protected abstract object InternalFunc(object a, object b);
+    }
+
+    internal class Aggregate<T> : Aggregate
+    {
+        private readonly Func<T, T, T> func;
+
+        public Aggregate(Func<T, T, T> func)
+        {
+            this.func = func;
+        }
+
+        protected override object InternalFunc(object a, object b)
+        {
+            return this.func((T)a, (T)b);
+        }
+    }
+
     public class Composable : IInterceptor, IComposable
     {
         private readonly CompositionBehavior behavior;
         private HashSet<object> parts = new HashSet<object>();
+        private IDictionary<string, Aggregate> aggregates = new Dictionary<string, Aggregate>();
 
         public Composable(CompositionBehavior behavior)
         {
@@ -17,10 +43,23 @@ namespace NCompose
 
         void IInterceptor.Intercept(IInvocation invocation)
         {
+            Aggregate aggregate;
             MethodInfo method;
             object target;
 
-            if (TryGetInvokeInfo(invocation, out method, out target))
+            if (aggregates.TryGetValue(invocation.Method.Name, out aggregate))
+            {
+                method = invocation.Method.ReflectedType.GetMethod(invocation.Method.Name);
+
+                foreach (var part in parts)
+                {
+                    var value = method.Invoke(part, invocation.Arguments);
+                    invocation.ReturnValue = invocation.ReturnValue == null ?
+                        value :
+                        aggregate.Func(invocation.ReturnValue, value);
+                }
+            }
+            else if (TryGetInvokeInfo(invocation, out method, out target))
             {
                 invocation.ReturnValue = method.Invoke(target, invocation.Arguments);
             }
@@ -48,6 +87,12 @@ namespace NCompose
         void IComposable.AddPart(object part)
         {
             parts.Add(part);
+        }
+
+        void IComposable.AddAggregate<T>(string name, Func<T, T, T> func)
+        {
+            var aggregate = new Aggregate<T>(func);
+            aggregates.Add(name, aggregate);
         }
 
         private bool TryGetInvokeInfo(IInvocation invocation, out MethodInfo method, out object target)
