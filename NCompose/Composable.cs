@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Castle.DynamicProxy;
-using NCompose.Aggregate;
 
 namespace NCompose
 {
@@ -21,23 +20,7 @@ namespace NCompose
             MethodInfo method;
             object target;
 
-            var attributes =
-                invocation.Method.GetCustomAttributes(typeof(Attribute), true);
-            if (attributes.Length > 0)
-            {
-                // XXX: handle multiple/conflicting attributes?
-
-                foreach (var item in attributes)
-                {
-                    var attribute = item as Attribute;
-                    if (attribute != null)
-                    {
-                        invocation.ReturnValue = attribute.GetResult(invocation, parts);
-                        break;
-                    }
-                }
-            }
-            else if (TryGetInvokeInfo(invocation, out method, out target))
+            if (TryGetInvokeInfo(invocation, out method, out target))
             {
                 invocation.ReturnValue = method.Invoke(target, invocation.Arguments);
             }
