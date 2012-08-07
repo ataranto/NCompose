@@ -61,21 +61,21 @@ namespace NCompose.Test
         [Fact]
         private void CallsGetProperty()
         {
-            var test = GetCompleteComposable();
+            var test = GetComposable();
             Assert.Equal(1, test.Property);
         }
 
         [Fact]
         private void CallsSetProperty()
         {
-            var test = GetCompleteComposable();
+            var test = GetComposable();
             test.Property = 1;
         }
 
         [Fact]
         private void CallsOutMethod()
         {
-            var test = GetCompleteComposable();
+            var test = GetComposable();
 
             int x;
             test.Out(out x);
@@ -85,7 +85,7 @@ namespace NCompose.Test
         [Fact]
         private void CallsRefMethod()
         {
-            var test = GetCompleteComposable();
+            var test = GetComposable();
 
             int x = 0;
             test.Ref(ref x);
@@ -95,7 +95,7 @@ namespace NCompose.Test
         [Fact]
         private void CallsReturnAndOutMethod()
         {
-            var test = GetCompleteComposable();
+            var test = GetComposable();
 
             int x;
             Assert.Equal(1, test.ReturnAndOut(out x));
@@ -105,7 +105,7 @@ namespace NCompose.Test
         [Fact]
         private void CallsReturnAndRefMethod()
         {
-            var test = GetCompleteComposable();
+            var test = GetComposable();
 
             int x = 0;
             Assert.Equal(1, test.ReturnAndRef(ref x));
@@ -115,11 +115,11 @@ namespace NCompose.Test
         [Fact]
         private void CallsGenericMethod()
         {
-            var test = GetCompleteComposable();
+            var test = GetComposable();
             Assert.Equal(default(int), test.Generic<int>());
         }
 
-        private static ICompleteInterface GetCompleteComposable()
+        private static ICompleteInterface GetComposable()
         {
             return ComposableFactory.Create<ICompleteInterface>(composable =>
             {
