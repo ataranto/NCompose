@@ -43,11 +43,10 @@
     <Compile Include="CompositionBehavior.cs" />
     <Compile Include="IComposable.cs" />
     <Compile Include="IInterceptor.cs" />
+    <Compile Include="Interceptors\Reduce.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Interceptors\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

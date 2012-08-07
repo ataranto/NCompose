@@ -56,32 +56,6 @@ namespace NCompose.Test
         }
     }
 
-    public interface IValueInterface
-    {
-        int ValueProperty { get; }
-        int ValueMethod();
-    }
-
-    public class ValueClass : IValueInterface
-    {
-        private readonly int value;
-
-        public ValueClass(int value)
-        {
-            this.value = value;
-        }
-
-        public int ValueProperty
-        {
-            get { return value; }
-        }
-
-        public int ValueMethod()
-        {
-            return value;
-        }
-    }
-
     public class ComposableFixture
     {
         [Fact]
