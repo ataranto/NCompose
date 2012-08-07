@@ -6,6 +6,5 @@ namespace NCompose
     {
         IList<object> Parts { get; }
         void AddPart(object part);
-        void AddAggregate<T>(string name, Func<T, T, T> func);
     }
 }

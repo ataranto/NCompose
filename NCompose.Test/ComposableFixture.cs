@@ -147,42 +147,11 @@ namespace NCompose.Test
             Assert.Equal(default(int), test.Generic<int>());
         }
 
-        [Fact]
-        private void CallsAggregateProperty()
-        {
-            var test = GetValueComposable();
-            Assert.Equal(6, test.ValueProperty);
-        }
-
-        [Fact]
-        private void CallsAggregateMethod()
-        {
-            var test = GetValueComposable();
-            Assert.Equal(6, test.ValueMethod());
-        }
-
         private static ICompleteInterface GetCompleteComposable()
         {
             return ComposableFactory.Create<ICompleteInterface>(composable =>
             {
                 composable.AddPart(new CompleteClass());
-            });
-        }
-
-        private static IValueInterface GetValueComposable()
-        {
-            return ComposableFactory.Create<IValueInterface>(composable =>
-            {
-                for (var x = 0; x < Count; x++)
-                {
-                    var part = new ValueClass(x + 1);
-                    composable.AddPart(part);
-                }
-
-                Func<int, int, int> func = (a, b) => { return a + b; };
-
-                composable.AddAggregate<int>("ValueProperty", func);
-                composable.AddAggregate<int>("ValueMethod", func);
             });
         }
     }

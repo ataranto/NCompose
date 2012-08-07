@@ -9,7 +9,6 @@ namespace NCompose
     {
         private readonly CompositionBehavior behavior;
         private HashSet<object> parts = new HashSet<object>();
-        private IDictionary<string, Aggregate> aggregates = new Dictionary<string, Aggregate>();
 
         public Composable(CompositionBehavior behavior)
         {
@@ -18,23 +17,10 @@ namespace NCompose
 
         void Castle.DynamicProxy.IInterceptor.Intercept(IInvocation invocation)
         {
-            Aggregate aggregate;
             MethodInfo method;
             object target;
 
-            if (aggregates.TryGetValue(invocation.Method.Name, out aggregate))
-            {
-                method = invocation.Method.ReflectedType.GetMethod(invocation.Method.Name);
-
-                foreach (var part in parts)
-                {
-                    var value = method.Invoke(part, invocation.Arguments);
-                    invocation.ReturnValue = invocation.ReturnValue == null ?
-                        value :
-                        aggregate.Func(invocation.ReturnValue, value);
-                }
-            }
-            else if (TryGetInvokeInfo(invocation, out method, out target))
+            if (TryGetInvokeInfo(invocation, out method, out target))
             {
                 invocation.ReturnValue = method.Invoke(target, invocation.Arguments);
             }
@@ -62,12 +48,6 @@ namespace NCompose
         void IComposable.AddPart(object part)
         {
             parts.Add(part);
-        }
-
-        void IComposable.AddAggregate<T>(string name, Func<T, T, T> func)
-        {
-            var aggregate = new Aggregate<T>(func);
-            aggregates.Add(name, aggregate);
         }
 
         private bool TryGetInvokeInfo(IInvocation invocation, out MethodInfo method, out object target)
