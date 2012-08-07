@@ -84,8 +84,6 @@ namespace NCompose.Test
 
     public class ComposableFixture
     {
-        private static int Count = 3;
-
         [Fact]
         private void CallsGetProperty()
         {

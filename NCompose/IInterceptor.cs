@@ -3,8 +3,8 @@ using Castle.DynamicProxy;
 
 namespace NCompose
 {
-    interface IInterceptor
+    public interface IInterceptor
     {
-        void Intercept(IInvocation invocation, IEnumerable<object> parts);
+        bool TryIntercept(IInvocation invocation, IEnumerable<object> parts);
     }
 }

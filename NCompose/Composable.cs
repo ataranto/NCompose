@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Castle.DynamicProxy;
 
 namespace NCompose
@@ -9,6 +8,7 @@ namespace NCompose
     {
         private readonly CompositionBehavior behavior;
         private HashSet<object> parts = new HashSet<object>();
+        private HashSet<IInterceptor> interceptors = new HashSet<IInterceptor>();
 
         public Composable(CompositionBehavior behavior)
         {
@@ -17,14 +17,34 @@ namespace NCompose
 
         void Castle.DynamicProxy.IInterceptor.Intercept(IInvocation invocation)
         {
-            MethodInfo method;
-            object target;
-
-            if (TryGetInvokeInfo(invocation, out method, out target))
+            // invoke any IComposable methods on this instance
+            if (invocation.Method.DeclaringType == typeof(IComposable))
             {
-                invocation.ReturnValue = method.Invoke(target, invocation.Arguments);
+                invocation.ReturnValue = invocation.Method.Invoke(this, invocation.Arguments);
+                return;
             }
-            else if (behavior == CompositionBehavior.Loose)
+
+            foreach (var interceptor in interceptors)
+            {
+                if (interceptor.TryIntercept(invocation, parts))
+                {
+                    return;
+                }
+            }
+
+            foreach (var part in parts)
+            {
+                var type = part.GetType();
+                var method = type.GetMethod(invocation.Method.Name);
+
+                if (method != null)
+                {
+                    invocation.ReturnValue = method.Invoke(part, invocation.Arguments);
+                    return;
+                }
+            }
+
+            if (behavior == CompositionBehavior.Loose)
             {
                 var type = invocation.Method.ReturnType;
                 invocation.ReturnValue = type.IsValueType ?
@@ -50,33 +70,9 @@ namespace NCompose
             parts.Add(part);
         }
 
-        private bool TryGetInvokeInfo(IInvocation invocation, out MethodInfo method, out object target)
+        void IComposable.AddInterceptor(IInterceptor interceptor)
         {
-            if (invocation.Method.DeclaringType == typeof(IComposable))
-            {
-                method = invocation.Method;
-                target = this;
-
-                return true;
-            }
-
-            foreach (var part in parts)
-            {
-                var type = part.GetType();
-                method = type.GetMethod(invocation.Method.Name);
-
-                if (method != null)
-                {
-                    target = part;
-
-                    return true;
-                }
-            }
-
-            method = null;
-            target = null;
-
-            return false;
+            interceptors.Add(interceptor);
         }
     }
 }

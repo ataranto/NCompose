@@ -6,5 +6,6 @@ namespace NCompose
     {
         IList<object> Parts { get; }
         void AddPart(object part);
+        void AddInterceptor(IInterceptor interceptor);
     }
 }
