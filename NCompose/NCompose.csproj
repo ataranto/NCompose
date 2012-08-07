@@ -43,6 +43,7 @@
     <Compile Include="ComposableFactory.cs" />
     <Compile Include="CompositionBehavior.cs" />
     <Compile Include="IComposable.cs" />
+    <Compile Include="IInterceptor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

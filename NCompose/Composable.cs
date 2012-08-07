@@ -5,7 +5,7 @@ using Castle.DynamicProxy;
 
 namespace NCompose
 {
-    public class Composable : IInterceptor, IComposable
+    public class Composable : Castle.DynamicProxy.IInterceptor, IComposable
     {
         private readonly CompositionBehavior behavior;
         private HashSet<object> parts = new HashSet<object>();
@@ -16,7 +16,7 @@ namespace NCompose
             this.behavior = behavior;
         }
 
-        void IInterceptor.Intercept(IInvocation invocation)
+        void Castle.DynamicProxy.IInterceptor.Intercept(IInvocation invocation)
         {
             Aggregate aggregate;
             MethodInfo method;
