@@ -38,8 +38,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ContainerFixture.cs" />
     <Compile Include="ComposableFixture.cs" />
-    <Compile Include="ComposableFactoryFixture.cs" />
     <Compile Include="Interceptors\ReduceFixture.cs" />
     <Compile Include="IValueInterface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

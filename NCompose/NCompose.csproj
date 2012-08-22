@@ -38,8 +38,8 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Container.cs" />
     <Compile Include="Composable.cs" />
-    <Compile Include="ComposableFactory.cs" />
     <Compile Include="CompositionBehavior.cs" />
     <Compile Include="IComposable.cs" />
     <Compile Include="IInterceptor.cs" />

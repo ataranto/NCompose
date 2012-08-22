@@ -3,128 +3,113 @@ using Xunit;
 
 namespace NCompose.Test
 {
-    public interface ICompleteInterface
+    public interface ISimpleInterface
     {
-        int Property { get; set; }
-        void Out(out int x);
-        void Ref(ref int x);
-        int ReturnAndOut(out int x);
-        int ReturnAndRef(ref int x);
-        T Generic<T>();
+        bool Method1();
+        bool Method2();
     }
 
-    internal class CompleteClass : ICompleteInterface
+    internal class SimpleClass1
     {
-        public int Property
+        public bool Method1()
         {
-            get
-            {
-                return 1;
-            }
-
-            set
-            {
-
-            }
+            return true;
         }
+    }
 
-        public void Out(out int x)
+    internal class SimpleClass2
+    {
+        public bool Method2()
         {
-            x = 1;
-        }
-
-        public void Ref(ref int x)
-        {
-            x = 1;
-        }
-
-        public int ReturnAndOut(out int x)
-        {
-            x = 1;
-            return 1;
-        }
-
-        public int ReturnAndRef(ref int x)
-        {
-            x = 1;
-            return 1;
-        }
-
-        public T Generic<T>()
-        {
-            return default(T);
+            return true;
         }
     }
 
     public class ComposableFixture
     {
         [Fact]
-        private void CallsGetProperty()
+        private void TestBasicCreateSyntax()
         {
-            var test = GetComposable();
-            Assert.Equal(1, test.Property);
-        }
-
-        [Fact]
-        private void CallsSetProperty()
-        {
-            var test = GetComposable();
-            test.Property = 1;
-        }
-
-        [Fact]
-        private void CallsOutMethod()
-        {
-            var test = GetComposable();
-
-            int x;
-            test.Out(out x);
-            Assert.Equal(1, x);
-        }
-
-        [Fact]
-        private void CallsRefMethod()
-        {
-            var test = GetComposable();
-
-            int x = 0;
-            test.Ref(ref x);
-            Assert.Equal(1, x);
-        }
-
-        [Fact]
-        private void CallsReturnAndOutMethod()
-        {
-            var test = GetComposable();
-
-            int x;
-            Assert.Equal(1, test.ReturnAndOut(out x));
-            Assert.Equal(1, x);
-        }
-
-        [Fact]
-        private void CallsReturnAndRefMethod()
-        {
-            var test = GetComposable();
-
-            int x = 0;
-            Assert.Equal(1, test.ReturnAndRef(ref x));
-            Assert.Equal(1, x);
-        }
-
-        [Fact]
-        private void CallsGenericMethod()
-        {
-            var test = GetComposable();
-            Assert.Equal(default(int), test.Generic<int>());
-        }
-
-        private static ICompleteInterface GetComposable()
-        {
-            return ComposableFactory.Create<ICompleteInterface>(composable =>
+            var test = Composable.Create<ISimpleInterface>(composable =>
             {
-                composable.AddPart(new CompleteClass());
+                composable.AddPart(new SimpleClass1());
+                composable.AddPart(new SimpleClass2());
             });
+
+            Assert.True(test.Method1());
+            Assert.True(test.Method2());
+        }
+
+        ////
+
+        [Fact]
+        private void ComposableImplementsInterface()
+        {
+            var composable = Composable.Create<ISimpleInterface>();
+            Assert.IsAssignableFrom<IComposable>(composable);
+        }
+
+        [Fact]
+        private void AddsPart()
+        {
+            Composable.Create<ISimpleInterface>(composable =>
+            {
+                composable.AddPart(new SimpleClass1());
+            });
+        }
+
+        [Fact]
+        private void PartsIsInitiallyEmpty()
+        {
+            var composable = Composable.Create<ISimpleInterface>() as IComposable;
+            var parts = composable.Parts;
+
+            Assert.NotNull(parts);
+            Assert.Equal(0, parts.Count);
+        }
+
+        [Fact]
+        private void CanGetParts()
+        {
+            var composable = Composable.Create<ISimpleInterface>() as IComposable;
+            var part = new SimpleClass1();
+            composable.AddPart(part);
+
+            Assert.Equal(1, composable.Parts.Count);
+            Assert.Same(part, composable.Parts[0]);
+        }
+
+        [Fact]
+        private void DuplicatePartsCannotBeAdded()
+        {
+            var composable = Composable.Create<ISimpleInterface>() as IComposable;
+            var part = new SimpleClass1();
+            composable.AddPart(part);
+            composable.AddPart(part);
+
+            Assert.Equal(1, composable.Parts.Count);
+        }
+
+        [Fact]
+        private void LooseBehaviorReturnsDefault()
+        {
+            var test = Composable.Create<ISimpleInterface>(CompositionBehavior.Loose);
+            Assert.Equal(default(bool), test.Method1());
+            Assert.Equal(default(bool), test.Method2());
+        }
+
+        [Fact]
+        private void StrictBehaviorThrowsException()
+        {
+            var test = Composable.Create<ISimpleInterface>(CompositionBehavior.Strict);
+            Assert.Throws<InvalidOperationException>(() => test.Method1());
+        }
+
+        [Fact]
+        private void DefaultBehaviorIsStrict()
+        {
+            var test = Composable.Create<ISimpleInterface>();
+            Assert.Throws<InvalidOperationException>(() => test.Method1());
         }
     }
 }

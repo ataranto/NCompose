@@ -37,7 +37,7 @@ namespace NCompose.Test.Interceptors
 
         private static IValueInterface<int> GetComposable(IInterceptor interceptor)
         {
-            var test = ComposableFactory.Create<IValueInterface<int>>(composable =>
+            var test = Composable.Create<IValueInterface<int>>(composable =>
             {
                 for (var x = 0; x < Count; x++)
                 {
