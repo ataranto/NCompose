@@ -57,22 +57,14 @@ namespace NCompose
             }
         }
 
-        IList<object> IComposable.Parts
+        bool IComposable.AddPart(object part)
         {
-            get
-            {
-                return new List<object>(parts).AsReadOnly();
-            }
+            return parts.Add(part);
         }
 
-        void IComposable.AddPart(object part)
+        bool IComposable.AddInterceptor(IInterceptor interceptor)
         {
-            parts.Add(part);
-        }
-
-        void IComposable.AddInterceptor(IInterceptor interceptor)
-        {
-            interceptors.Add(interceptor);
+            return interceptors.Add(interceptor);
         }
     }
 }

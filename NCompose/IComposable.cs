@@ -4,8 +4,7 @@ namespace NCompose
 {
     public interface IComposable
     {
-        IList<object> Parts { get; }
-        void AddPart(object part);
-        void AddInterceptor(IInterceptor interceptor);
+        bool AddPart(object part);
+        bool AddInterceptor(IInterceptor interceptor);
     }
 }
