@@ -31,10 +31,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core, Version=2.5.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ext\castle\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Moq">
+      <HintPath>..\ext\moq\Moq.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="xunit">
       <HintPath>..\ext\xunit\xunit.dll</HintPath>
+    </Reference>
+    <Reference Include="xunit.extensions">
+      <HintPath>..\ext\xunit\xunit.extensions.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -42,6 +52,7 @@
     <Compile Include="ComposableFixture.cs" />
     <Compile Include="Interceptors\ReduceFixture.cs" />
     <Compile Include="IValueInterface.cs" />
+    <Compile Include="MoqFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ValueClass.cs" />
   </ItemGroup>

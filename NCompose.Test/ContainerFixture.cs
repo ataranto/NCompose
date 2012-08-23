@@ -1,5 +1,8 @@
 ﻿using System;
 using Xunit;
+using Moq;
+using Castle.DynamicProxy;
+using System.Reflection;
 
 namespace NCompose.Test
 {
@@ -56,7 +59,30 @@ namespace NCompose.Test
         }
     }
 
-    public class ContainerFixture
+    public class ContainerFixture : IUseFixture<MoqFixture>
+    {
+        private Mock<IInvocation> mock_invocation;
+
+        public void SetFixture(MoqFixture moq_fixture)
+        {
+            mock_invocation = moq_fixture.Create<IInvocation>();
+        }
+
+        [Fact]
+        private void Foo()
+        {
+            var interceptor = new Container(CompositionBehavior.Default) as
+                Castle.DynamicProxy.IInterceptor;
+
+            Mock.Get<MethodInfo>(mock_invocation.Object.Method).
+                Setup(m => m.Name).
+                Returns("foo");
+
+            interceptor.Intercept(mock_invocation.Object);
+        }
+    }
+
+    public class OldContainerFixture
     {
         [Fact]
         private void CallsGetProperty()
