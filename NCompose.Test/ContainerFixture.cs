@@ -1,8 +1,8 @@
-﻿using System;
-using Xunit;
+﻿using Castle.DynamicProxy;
 using Moq;
-using Castle.DynamicProxy;
+using Xunit;
 using System.Reflection;
+using System.Globalization;
 
 namespace NCompose.Test
 {
@@ -71,12 +71,25 @@ namespace NCompose.Test
         [Fact]
         private void Foo()
         {
-            var interceptor = new Container(CompositionBehavior.Default) as
-                Castle.DynamicProxy.IInterceptor;
+            var container = new Container(CompositionBehavior.Default);
+            var interceptor = container as Castle.DynamicProxy.IInterceptor;
 
-            Mock.Get<MethodInfo>(mock_invocation.Object.Method).
-                Setup(m => m.Name).
-                Returns("foo");
+            var arguments = new object[] { new object() };
+            var return_value = new object();
+
+            var mock_method = Mock.Get<MethodInfo>(mock_invocation.Object.Method);
+            
+            mock_method.
+                Setup(m => m.DeclaringType).
+                Returns(typeof(IComposable));
+            mock_invocation.
+                Setup(m => m.Arguments).
+                Returns(arguments);
+            mock_method.
+                Setup(m => m.Invoke(container, It.IsAny<BindingFlags>(), It.IsAny<Binder>(), arguments, It.IsAny<CultureInfo>())).
+                Returns(return_value);
+            mock_invocation.
+                SetupSet(m => m.ReturnValue = return_value);
 
             interceptor.Intercept(mock_invocation.Object);
         }

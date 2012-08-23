@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Castle.DynamicProxy;
+using System.Reflection;
 
 namespace NCompose
 {
@@ -20,7 +21,8 @@ namespace NCompose
             // invoke any IComposable methods on this instance
             if (invocation.Method.DeclaringType == typeof(IComposable))
             {
-                invocation.ReturnValue = invocation.Method.Invoke(this, invocation.Arguments);
+                invocation.ReturnValue = invocation.Method.Invoke(this,
+                    BindingFlags.Default, null, invocation.Arguments, null);
                 return;
             }
 
